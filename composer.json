@@ -7,6 +7,10 @@
         "tracking"
     ],
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/gtkvn/eloquent-tracking/issues",
+        "source": "https://github.com/gtkvn/eloquent-tracking"
+    },
     "authors": [
         {
             "name": "Giang Thai Cuong",
@@ -32,5 +36,14 @@
         "psr-4": {
             "Gtk\\EloquentTracking\\Tests\\": "tests/"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gtk\\EloquentTracking\\EloquentTrackingServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

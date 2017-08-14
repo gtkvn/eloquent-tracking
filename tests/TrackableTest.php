@@ -2,10 +2,7 @@
 
 namespace Gtk\EloquentTracking\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Illuminate\Events\Dispatcher;
 use Gtk\EloquentTracking\Trackable;
-use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -14,21 +11,7 @@ class TrackableTest extends TestCase
 {
     public function setUp()
     {
-        $db = new DB;
-
-        $db->addConnection([
-            'driver'    => 'sqlite',
-            'database'  => ':memory:',
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-        ]);
-
-        $db->setEventDispatcher(new Dispatcher(new Container));
-
-        $db->setAsGlobal();
-
-        $db->bootEloquent();
+        parent::setUp();
 
         DB::schema()->create('foos', function ($table) {
             $table->increments('id');
@@ -54,13 +37,13 @@ class TrackableTest extends TestCase
             ->once()
             ->andReturn(1);
 
-        $foo = Foo::forceCreate([
+        $foo = FooTrackable::forceCreate([
             'zonda' => 'some text',
         ]);
 
         $this->assertDatabaseHas('model_tracking_logs', [
             'trackable_id' => $foo->id,
-            'trackable_type' => 'Gtk\EloquentTracking\Tests\Foo',
+            'trackable_type' => 'Gtk\EloquentTracking\Tests\FooTrackable',
             'action' => 'create',
             'before' => '[]',
             'after' => $foo->toJson(),
@@ -72,7 +55,7 @@ class TrackableTest extends TestCase
 
         $this->assertDatabaseHas('model_tracking_logs', [
             'trackable_id' => $foo->id,
-            'trackable_type' => 'Gtk\EloquentTracking\Tests\Foo',
+            'trackable_type' => 'Gtk\EloquentTracking\Tests\FooTrackable',
             'action' => 'update',
             'before' => json_encode(['zonda' => 'some text']),
             'after' => json_encode(['zonda' => 'some text updated']),
@@ -83,27 +66,16 @@ class TrackableTest extends TestCase
 
         $this->assertDatabaseHas('model_tracking_logs', [
             'trackable_id' => $foo->id,
-            'trackable_type' => 'Gtk\EloquentTracking\Tests\Foo',
+            'trackable_type' => 'Gtk\EloquentTracking\Tests\FooTrackable',
             'action' => 'delete',
             'before' => $foo->toJson(),
             'after' => null,
             'user_id' => 1,
         ]);
     }
-
-    public function assertDatabaseHas($table, $data)
-    {
-        $instance = DB::table($table);
-
-        foreach ($data as $key => $value) {
-            $instance = $instance->where($key, $value);
-        }
-
-        $this->assertCount(1, $instance->get());
-    }
 }
 
-class Foo extends Model
+class FooTrackable extends Model
 {
     use Trackable;
 

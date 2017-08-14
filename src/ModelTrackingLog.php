@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class ModelTrackingLog extends Model
 {
     protected $casts = [
-        'before', 'after'
+        'before' => 'json',
+        'after' => 'json',
     ];
     
     public static function createByAction($model, $action)

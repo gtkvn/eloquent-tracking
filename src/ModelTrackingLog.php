@@ -11,7 +11,7 @@ class ModelTrackingLog extends Model
         'before' => 'json',
         'after' => 'json',
     ];
-    
+
     public static function createByAction($model, $action)
     {
         return static::forceCreate([

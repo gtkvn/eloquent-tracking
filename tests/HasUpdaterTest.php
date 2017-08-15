@@ -26,7 +26,9 @@ class HasUpdaterTest extends TestCase
     {
         Auth::shouldReceive('guest')->andReturn(false);
 
-        Auth::shouldReceive('id')->once()->andReturn(1);
+        Auth::shouldReceive('id')
+            ->once()
+            ->andReturn(1);
 
         $foo = FooHasUpdater::forceCreate([
             'zonda' => 'some text',
@@ -35,7 +37,9 @@ class HasUpdaterTest extends TestCase
         $this->assertEquals(1, $foo->created_by);
         $this->assertEquals(1, $foo->updated_by);
 
-        Auth::shouldReceive('id')->once()->andReturn(2);
+        Auth::shouldReceive('id')
+            ->once()
+            ->andReturn(2);
 
         $foo->forceFill([
             'zonda' => 'some text updated',

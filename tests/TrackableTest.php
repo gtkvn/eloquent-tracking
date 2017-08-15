@@ -50,6 +50,10 @@ class TrackableTest extends TestCase
             'user_id' => 1,
         ]);
 
+        Auth::shouldReceive('id')
+            ->once()
+            ->andReturn(2);
+
         $foo->zonda = 'some text updated';
         $foo->save();
 
@@ -59,8 +63,12 @@ class TrackableTest extends TestCase
             'action' => 'update',
             'before' => json_encode(['zonda' => 'some text']),
             'after' => json_encode(['zonda' => 'some text updated']),
-            'user_id' => 1,
+            'user_id' => 2,
         ]);
+
+        Auth::shouldReceive('id')
+            ->once()
+            ->andReturn(3);
 
         $foo->delete();
 
@@ -70,7 +78,7 @@ class TrackableTest extends TestCase
             'action' => 'delete',
             'before' => $foo->toJson(),
             'after' => null,
-            'user_id' => 1,
+            'user_id' => 3,
         ]);
     }
 }
